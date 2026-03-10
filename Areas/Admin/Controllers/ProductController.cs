@@ -46,16 +46,14 @@ namespace Clothes_shop.Areas.Admin.Controllers
         // GET: Admin/Product/Create
         public IActionResult Create()
         {
-            ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Id");
-            return View();
+            ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name");
+            return View("Create");
         }
 
-        // POST: Admin/Product/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+ 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,ImageUrl,Price,Description,quantity,CreatedAt,CategoryId")] Products products)
+        public async Task<IActionResult> Create([Bind("Name,ImageUrl,Price,Description,quantity,CreatedAt,CategoryId")] Products products)
         {
             if (ModelState.IsValid)
             {
@@ -63,11 +61,11 @@ namespace Clothes_shop.Areas.Admin.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Id", products.CategoryId);
+            ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name", products.CategoryId);
             return View(products);
         }
 
-        // GET: Admin/Product/Edit/5
+        [HttpGet]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -80,13 +78,10 @@ namespace Clothes_shop.Areas.Admin.Controllers
             {
                 return NotFound();
             }
-            ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Id", products.CategoryId);
+            ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name", products.CategoryId);
             return View(products);
         }
 
-        // POST: Admin/Product/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name,ImageUrl,Price,Description,quantity,CreatedAt,CategoryId")] Products products)
@@ -116,7 +111,7 @@ namespace Clothes_shop.Areas.Admin.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Id", products.CategoryId);
+            ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name", products.CategoryId);
             return View(products);
         }
 

@@ -1,0 +1,26 @@
+﻿@{
+	ViewData["Title"] = "Sản Phẩm";
+	Layout = "_Layout";
+}
+
+<div class="container-fluid mt-4">
+    <div class="row px-xl-5">
+        <div class="col-lg-2 col-md-3">
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-primary text-white py-3">
+                    <h6 class="m-0 font-weight-bold">Danh mục</h6>
+                </div>
+                <div class="list-group list-group-flush">
+                    @await Component.InvokeAsync("CategoryMenu")
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-10 col-md-9">
+            <div class="card shadow-sm">
+                Noi dung
+            </div>
+        </div>
+
+    </div>
+</div>

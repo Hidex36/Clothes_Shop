@@ -1,5 +1,55 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
+﻿<header class="navbar navbar-expand-md navbar-light sticky-top bg-white border-bottom shadow-sm py-4 ">
+    <div class="container-fluid px-4">
+        <button class="navbar-toggler d-md-none border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <a class="navbar-brand fw-bold fs-2 text-uppercase d-flex align-items-center" href="/" style="letter-spacing: 1px;">
+            CLO<span class="text-primary">THES</span> SHOP
+        </a>
+
+        <ul class="navbar-nav ms-auto flex-row align-items-center">
+
+            <li class="nav-item dropdown me-2">
+                <a class="nav-link position-relative p-2" href="#" id="alertsDropdown" data-bs-toggle="dropdown">
+                    <i class="bi bi-bell fs-5 text-dark"></i>
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.65rem;">
+                        3
+                    </span>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 mt-2">
+                    <li><h6 class="dropdown-header">Thông báo mới</h6></li>
+                    <li><a class="dropdown-item py-2" href="#">Đơn hàng mới #123</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item text-center small text-muted" href="#">Xem tất cả</a></li>
+                </ul>
+            </li>
+
+            <div class="vr mx-3 text-gray-300 d-none d-sm-block" style="height: 25px;"></div>
+
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle d-flex align-items-center p-0" href="#" id="userDropdown" data-bs-toggle="dropdown">
+                    <div class="me-2 text-end d-none d-lg-inline">
+                        <span class="d-block small fw-bold text-dark">Quản trị viên</span>
+                        <span class="text-muted" style="font-size: 0.75rem;">Admin</span>
+                    </div>
+                    <img class="rounded-circle border border-2 border-light shadow-sm"
+                         src="https://ui-avatars.com/api/?name=Admin&background=0D6EFD&color=fff"
+                         width="40" height="40">
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-3">
+                    <li><a class="dropdown-item py-2" href="#"><i class="bi bi-person me-2"></i>Hồ sơ</a></li>
+                    <li><a class="dropdown-item py-2" href="#"><i class="bi bi-gear me-2"></i>Cài đặt</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li>
+                        <form asp-controller="Account" asp-action="Logout" method="post">
+                            <button type="submit" class="dropdown-item text-danger py-2 border-0 bg-transparent">
+                                <i class="bi bi-box-arrow-right me-2"></i>Đăng xuất
+                            </button>
+                        </form>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+</header>

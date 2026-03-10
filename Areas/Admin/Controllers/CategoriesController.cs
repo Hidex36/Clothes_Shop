@@ -19,7 +19,8 @@ namespace Clothes_shop.Areas.Admin.Controllers
         // GET: Admin/Categories
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Categories.ToListAsync());
+           var category = _context.Categories.ToList();
+            return View(category);
         }
 
         // GET: Admin/Categories/Details/5
@@ -43,13 +44,15 @@ namespace Clothes_shop.Areas.Admin.Controllers
         // GET: Admin/Categories/Create
         public IActionResult Create()
         {
-            return View();
+            return View("Create");
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name")] Categories categories)
+        public async Task<IActionResult> Create([Bind("Name")] Categories categories)
         {
+
+            var errors = ModelState.Values.SelectMany(v => v.Errors);
             if (ModelState.IsValid)
             {
                 _context.Add(categories);
@@ -58,8 +61,7 @@ namespace Clothes_shop.Areas.Admin.Controllers
             }
             return View(categories);
         }
-
-        // GET: Admin/Categories/Edit/5
+        [HttpGet]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -75,9 +77,6 @@ namespace Clothes_shop.Areas.Admin.Controllers
             return View(categories);
         }
 
-        // POST: Admin/Categories/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name")] Categories categories)
@@ -107,24 +106,6 @@ namespace Clothes_shop.Areas.Admin.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(categories);
-        }
-
-        // GET: Admin/Categories/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var categories = await _context.Categories
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (categories == null)
-            {
-                return NotFound();
-            }
-
             return View(categories);
         }
 

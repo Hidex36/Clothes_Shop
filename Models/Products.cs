@@ -14,6 +14,6 @@ namespace Clothes_shop.Models
         public DateTime CreatedAt { get; set; } = DateTime.Now;
 
         public int CategoryId { get; set; }
-        public Categories Category { get; set; }
+        public Categories? Category { get; set; }
     }
 }

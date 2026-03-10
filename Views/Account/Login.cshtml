@@ -1,0 +1,22 @@
+﻿@model Clothes_shop.Models.ViewModels.LoginViewModel;
+
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Register" method="post">
+            <h2>Đăng ký tài khoản mới</h2>
+            <hr />
+            <div asp-validation-summary="All" class="text-danger"></div>
+
+            <div class="form-group">
+                <label asp-for="Email"></label>
+                <input asp-for="Email" class="form-control" />
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Password"></label>
+                <input asp-for="Password" class="form-control" />
+            </div>
+            <button type="submit" class="btn btn-primary mt-2">Đăng ký</button>
+        </form>
+    </div>
+</div>

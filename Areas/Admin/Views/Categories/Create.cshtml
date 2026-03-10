@@ -1,33 +1,91 @@
 ﻿@model Clothes_shop.Models.Categories
 
 @{
-    ViewData["Title"] = "Create";
+    Layout = "_Layout";
+    ViewData["Title"] = "Thêm mới danh mục";
 }
 
-<h1>Create</h1>
+<div class="container-fluid px-4 py-4">
+    <div class="mb-4">
+        <a asp-action="Index" class="btn btn-link text-decoration-none text-muted p-0">
+            <i class="bi bi-arrow-left-circle-fill me-2"></i>Quay lại danh sách
+        </a>
+    </div>
 
-<h4>Categories</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
+    <div class="row">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-header bg-white border-bottom py-3">
+                    <div class="d-flex align-items-center">
+                        <h4 class="card-title mb-0 fw-bold text-dark">Thêm Danh Mục Sản Phẩm Mới</h4>
+                    </div>
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb mb-0">
+                            <li class="breadcrumb-item"><a asp-action="Index" class="text-decoration-none">Danh Mục</a></li>
+                            <li class="breadcrumb-item active">Tạo mới</li>
+                        </ol>
+                    </nav>
+                </div>
+
+                <div class="card-body p-5">
+                    <form asp-action="Create" method="post">
+                        <div class="row">
+                            <div class="col-12 mb-4">
+                                <label class="form-label fw-bold text-uppercase small text-muted mb-2">Tên danh mục</label>
+                                <div class="input-group input-group-lg">
+                                    <span class="input-group-text bg-light border-2 border-end-0"><i class="bi bi-type"></i></span>
+                                    <input asp-for="Name" type="text" class="form-control border-2 border-start-0 shadow-none bg-light focus-white"
+                                           placeholder="Ví dụ: Giày Thể Thao, Phụ Kiện..." required>
+                                </div>
+                                <div class="form-text mt-2 ms-1">
+                                    <i class="bi bi-info-circle me-1"></i> Tên này sẽ xuất hiện trên thanh điều hướng và bộ lọc tìm kiếm.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center mt-4 border-top pt-4">
+                            <div class="tip-box d-none d-md-flex align-items-center text-muted">
+                                <i class="bi bi-lightning-charge text-warning me-2"></i>
+                                <span class="small italic">Mẹo: Nên đặt tên dưới 20 ký tự .</span>
+                            </div>
+
+                            <div class="actions d-flex gap-3">
+                                <button type="button" class="btn btn-light btn-lg px-4 border fw-semibold">
+                                    Hủy bỏ
+                                </button>
+                                <button type="submit" class="btn btn-primary btn-lg px-5 fw-bold shadow">
+                                    <i class="bi bi-cloud-arrow-up-fill me-2"></i>LƯU DANH MỤC
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+        </div>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+<style>
+    /* Custom nhẹ để giao diện mượt hơn */
+    .card {
+        transition: all 0.3s ease;
+    }
 
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
+    .form-control:focus {
+        border-color: #0d6efd !important;
+        background-color: #fff !important;
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.1) !important;
+    }
+
+    .icon-box {
+        width: 48px;
+        height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .bg-primary-subtle {
+        background-color: #e7f1ff;
+    }
+</style>

@@ -1,35 +1,73 @@
 ﻿@model IEnumerable<Clothes_shop.Models.Categories>
 
 @{
-    ViewData["Title"] = "Index";
+    Layout = "_Layout";
 }
 
-<h1>Index</h1>
+<div class="container-fluid px-4 py-5">
+    <div class="d-flex justify-content-between align-items-end mb-4 pb-2 border-bottom">
+        <div>
+            <h1 class="fw-bolder display-6 text-dark mb-1">Quản Lý Danh Mục</h1>
+        </div>
+        <div>
+            <a asp-area="Admin" asp-controller="Categories" asp-action="Create" class="btn btn-primary btn-lg rounded-3 px-4 py-3 shadow d-flex align-items-center">
+                <i class="bi bi-plus-circle-fill me-2"></i>
+                <span class="fw-bold">THÊM MỚI DANH MỤC</span>
+            </a>
+        </div>
+    </div>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+    <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="bg-light border-bottom">
+                    <tr class="text-primary text-uppercase">
+                        <th class="ps-4 py-4 fw-bold">Mã Danh Mục</th>
+                        <th class="py-4 fw-bold">Tên Danh Mục</th>
+                        <th class="py-4 fw-bold text-center">Số Lượng sản Phẩm</th>
+                    </tr>
+                </thead>
+                <tbody class="border-top-0">
+                    @if (Model != null && Model.Any())
+                    {
+                        foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    <span class="badge bg-light text-dark border px-3 py-2 fs-6">
+                                        #@item.Id.ToString("D3")
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="fw-bold text-dark px-3">@item.Name</span>
+                                </td>
+                                <td class="text-center">    
+                                    <span class="badge rounded-pill bg-info text-dark px-3">
+                                        @(item.products?.Count ?? 0) sản phẩm
+                                    </span>
+                                </td>
+                                <td class="pe-4 text-center">
+                                    <div class="d-flex justify-content-center gap-2">
+                                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-warning">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger">
+                                            <i class="bi bi-trash"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="5" class="text-center py-4 text-muted">Chưa có danh mục nào.</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+

@@ -22,12 +22,7 @@
   <ItemGroup>
     <Folder Include="Areas\Admin\Data\" />
     <Folder Include="Areas\Admin\Models\" />
-    <Folder Include="Areas\Admin\ViewComponents\" />
-    <Folder Include="Models\ViewModels\" />
-    <Folder Include="ViewComponents\" />
-    <Folder Include="Views\Cart\" />
-    <Folder Include="Views\Product\" />
-    <Folder Include="Views\Shared\Components\" />
+    <Folder Include="Areas\Admin\Views\Order\" />
   </ItemGroup>
 
 </Project>
