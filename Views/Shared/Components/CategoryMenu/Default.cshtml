@@ -1,20 +1,54 @@
-﻿@model IEnumerable<Categories>
+﻿@model IEnumerable<Categories> 
 
-<div class="list-group list-group-flush">
-    <a asp-controller="Product"
-       asp-action="Index"
-       asp-route-categoryId=""
-       class="list-group-item list-group-item-action">
-        Tất cả sản phẩm
-    </a>
 
-    @foreach (var item in Model)
-    {
-        <a asp-controller="Product"
-           asp-action="ProductByCategory"
-           asp-route-categoryId="@item.Id"
-           class="list-group-item list-group-item-action">
-            @item.Name
+@if (ViewBag.IsHeader == true){
+
+    <li class="nav-item dropdown">
+        <a asp-controller="Product" asp-action="Index" class="nav-link  fw-semibold px-3"  data-bs-toggle="dropdown">
+            Danh Mục Sản Phẩm
+            <i class="bi bi-chevron-down ms-1 small"></i>
         </a>
-    }
-</div>
+        
+        <div class="dropdown-menu border-0 shadow-lg p-3" style="min-width: 450px;">
+            <div class="row">
+                @foreach (var chunk in Model.Chunk(5))
+                {
+                    <div class="col-6">
+                        <ul class="list-unstyled">
+                            @foreach (var item in chunk)
+                            {
+                                <li>
+                                    <a class="dropdown-item py-2" asp-controller="Product"
+                                    asp-action="ProductByCategory" asp-route-categoryId="@item.Id">
+                                        @item.Name
+                                    </a>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                }
+            </div>
+        </div>
+    </li>
+}
+else
+{
+    <div class="list-group list-group-flush">
+        <a asp-controller="Product"
+           asp-action="Index"
+           asp-route-categoryId=""
+           class="list-group-item list-group-item-action">
+            Tất cả sản phẩm
+        </a>
+
+        @foreach (var item in Model)
+        {
+            <a asp-controller="Product"
+               asp-action="ProductByCategory"
+               asp-route-categoryId="@item.Id"
+               class="list-group-item list-group-item-action">
+                @item.Name
+            </a>
+        }
+    </div>
+}

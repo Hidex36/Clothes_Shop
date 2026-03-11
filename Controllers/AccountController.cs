@@ -1,10 +1,20 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Clothes_shop.Models.ViewModels;
+using Microsoft.AspNetCore.Identity;
 
 namespace Clothes_shop.Controllers
 {
     public class AccountController : Controller
     {
+        private readonly UserManager<IdentityUser> userManager;
+        private readonly SignInManager<IdentityUser> signInManager;
+
+        public AccountController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager)
+        {
+            this.userManager = userManager;
+            this.signInManager = signInManager;
+        }
+
         [HttpGet]
         public IActionResult Register()
         {
@@ -14,30 +24,43 @@ namespace Clothes_shop.Controllers
         [HttpPost]
         public async Task<IActionResult> Register(RegisterViewmodel model)
         {
-            // Here you would typically add code to create a new user account
-            // For example, you might save the user information to a database
-            // After successful registration, redirect to the login page
-            return RedirectToAction("Login");
+            if (ModelState.IsValid)
+            {
+                var user = new IdentityUser
+                {
+                    UserName = model.Email,
+                    Email = model.Email
+                };
+
+                var Result = await userManager.CreateAsync(user, model.Password);
+                if (Result.Succeeded)
+                {
+                    await signInManager.SignInAsync(user, isPersistent: false);
+                    return RedirectToAction("Index", "Product");
+                }
+
+            }
+            return View(model);
         }
 
+        [HttpGet]
         public IActionResult Login()
         {
             return View();
         }
-
         [HttpPost]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
-            // Here you would typically add code to authenticate the user
-            // For example, you might check the user's credentials against a database
-            // After successful login, redirect to the home page or user dashboard
-            return RedirectToAction("Index", "Home");
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Logout()
-        {
-            return RedirectToAction("Index", "Home");
+            if (ModelState.IsValid)
+            {
+                var Result = await signInManager.PasswordSignInAsync(model.Email, model.Password, false, lockoutOnFailure: false);
+                if (Result.Succeeded)
+                {
+                    return RedirectToAction("Index", "Product");
+                }
+                ModelState.AddModelError(string.Empty, "Sai mat khau");
+            }
+            return View(model);
         }
     }
 }

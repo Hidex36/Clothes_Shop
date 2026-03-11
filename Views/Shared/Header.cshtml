@@ -13,14 +13,12 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav mx-auto">
                     <li class="nav-item">
-                        <a  asp-controller="Home" asp-action="Index"class="nav-link active fw-semibold px-3" >Trang Chủ</a>
+                        <a  asp-controller="Home" asp-action="Index"  class="nav-link active fw-semibold px-3" >Trang Chủ</a>
                     </li>
                     <li class="nav-item">
                         <a asp-controller="Home" asp-action="About" class="nav-link fw-semibold px-3" >Giới Thiệu</a>
                     </li>
-                    <li class="nav-item">
-                        <a asp-controller="Product" asp-action="Index" class="nav-link fw-semibold px-3">Sản Phẩm</a>
-                    </li>
+                    @await Component.InvokeAsync("CategoryMenu", new { isHeader = true })
 
                     <li class="nav-item">
                         <a asp-controller="Home" asp-action="Contact" class="nav-link fw-semibold px-3" >Liên Hệ</a>

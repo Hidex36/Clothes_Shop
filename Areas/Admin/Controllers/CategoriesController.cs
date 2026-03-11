@@ -109,6 +109,8 @@ namespace Clothes_shop.Areas.Admin.Controllers
             return View(categories);
         }
 
+
+
         // POST: Admin/Categories/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]

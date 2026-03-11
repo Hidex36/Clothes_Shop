@@ -11,7 +11,7 @@
                     <h6 class="m-0 font-weight-bold">Danh mục</h6>
                 </div>
                 <div class="list-group list-group-flush">
-                    @await Component.InvokeAsync("CategoryMenu")
+                    @await Component.InvokeAsync("CategoryMenu", new { isHeader = false })
                 </div>
             </div>
         </div>
