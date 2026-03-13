@@ -13,6 +13,8 @@ namespace Clothes_shop.Models
         public int quantity { get; set; } //tong so luong san pham (kho)
         public DateTime CreatedAt { get; set; } = DateTime.Now;
 
+        public DateTime EditAt { get; set; } = DateTime.Now;
+
         public int CategoryId { get; set; }
         public Categories? Category { get; set; }
     }

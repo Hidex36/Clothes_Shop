@@ -19,25 +19,9 @@ namespace Clothes_shop.Areas.Admin.Controllers
         // GET: Admin/Categories
         public async Task<IActionResult> Index()
         {
-           var category = _context.Categories.ToList();
-            return View(category);
-        }
-
-        // GET: Admin/Categories/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
             var categories = await _context.Categories
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (categories == null)
-            {
-                return NotFound();
-            }
-
+                                     .Include(c => c.products)
+                                     .ToListAsync();
             return View(categories);
         }
 

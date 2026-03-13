@@ -1,6 +1,7 @@
 using Clothes_shop.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
+using Clothes_shop.Models;
 
 namespace Clothes_shop
 {
@@ -21,7 +22,13 @@ namespace Clothes_shop
             builder.Services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-            builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+            builder.Services.AddIdentity<Users, IdentityRole<int>>(options =>
+            {
+                // C?u hình m?t kh?u ??n gi?n ?? d? test (tùy ch?n)
+                options.Password.RequireDigit = false;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequiredLength = 3;
+            })
                 .AddEntityFrameworkStores<AppDbContext>();
 
             builder.Services.AddDistributedMemoryCache();

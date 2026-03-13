@@ -70,7 +70,6 @@
                 </div>
             </div>
 
-            @* Cột bên phải: Ảnh và Nút lưu *@
             <div class="col-lg-4 d-flex flex-column">
                 <div class="card border-0 shadow-sm rounded-4 mb-4">
                     <div class="card-body p-4">
@@ -79,7 +78,7 @@
                         <div id="imagePreview" class="bg-light border border-2 border-dashed rounded-4 d-flex flex-column align-items-center justify-content-center mb-3" style="border-style: dashed !important; height:250px; overflow: hidden;">
                             @if (!string.IsNullOrEmpty(Model.ImageUrl))
                             {
-                                <img src="~/images/products/@Model.ImageUrl" style="max-height: 100%; max-width: 100%; object-fit: contain;" />
+                                <img src="@Model.ImageUrl" style="max-height: 100%; max-width: 100%; object-fit: contain;" />
                             }
                             else
                             {

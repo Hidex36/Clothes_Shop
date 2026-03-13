@@ -19,29 +19,33 @@ namespace Clothes_shop.Controllers
         }
 
         [HttpGet]
-        public IActionResult ProductByCategory(int id)
+        public IActionResult ProductByCategory(int id) 
         {
             var products = _context.Products
                 .Include(p => p.Category)
-                .Where(p => p.CategoryId == CategoryId)
+                .Where(p => p.CategoryId == id) 
                 .ToList();
+
             if (!products.Any())
             {
+                var category = _context.Categories.Find(id);
                 return View(new ProductByCategoryViewModel
                 {
-                    CategoryId = CategoryId,
-                    CategoryName = "Không tìm thấy sản phẩm",
+                    CategoryId = id,
+                    CategoryName = category?.Name ?? "Danh mục không tồn tại",
                     Products = new List<Products>()
-
                 });
             }
-            var Result = (new ProductByCategoryViewModel
+
+            // 3. Nếu có sản phẩm
+            var result = new ProductByCategoryViewModel
             {
-                CategoryId = CategoryId,
+                CategoryId = id,
                 CategoryName = products.First().Category.Name,
                 Products = products
+            };
 
-            });
-            return View(Result);
+            return View(result);
         }
+    }
 }
