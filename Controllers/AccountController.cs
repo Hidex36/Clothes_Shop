@@ -1,15 +1,17 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Clothes_shop.Models.ViewModels;
 using Microsoft.AspNetCore.Identity;
+using Clothes_shop.Models; // Đảm bảo namespace này chứa class Users của bạn
 
 namespace Clothes_shop.Controllers
 {
     public class AccountController : Controller
     {
-        private readonly UserManager<IdentityUser> userManager;
-        private readonly SignInManager<IdentityUser> signInManager;
+        // Thay đổi từ IdentityUser sang Users
+        private readonly UserManager<Users> userManager;
+        private readonly SignInManager<Users> signInManager;
 
-        public AccountController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager)
+        public AccountController(UserManager<Users> userManager, SignInManager<Users> signInManager)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
@@ -26,10 +28,11 @@ namespace Clothes_shop.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new IdentityUser
+                var user = new Users
                 {
                     UserName = model.Email,
-                    Email = model.Email
+                    Email = model.Email,
+                    CreatedAt = DateTime.Now
                 };
 
                 var Result = await userManager.CreateAsync(user, model.Password);
@@ -39,6 +42,11 @@ namespace Clothes_shop.Controllers
                     return RedirectToAction("Index", "Product");
                 }
 
+                // Hiển thị lỗi từ Identity nếu đăng ký thất bại (ví dụ mật khẩu yếu)
+                foreach (var error in Result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
             }
             return View(model);
         }
@@ -48,19 +56,30 @@ namespace Clothes_shop.Controllers
         {
             return View();
         }
+
         [HttpPost]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
             if (ModelState.IsValid)
             {
-                var Result = await signInManager.PasswordSignInAsync(model.Email, model.Password, false, lockoutOnFailure: false);
+                // Identity mặc định dùng UserName để đăng nhập, ở đây bạn đang gán UserName = Email
+                var Result = await signInManager.PasswordSignInAsync(model.Email, model.Password, false,lockoutOnFailure: false);
+
                 if (Result.Succeeded)
                 {
                     return RedirectToAction("Index", "Product");
                 }
-                ModelState.AddModelError(string.Empty, "Sai mat khau");
+
+                ModelState.AddModelError(string.Empty, "Email hoặc mật khẩu không chính xác.");
             }
             return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Logout()
+        {
+            await signInManager.SignOutAsync();
+            return RedirectToAction("Index", "Product");
         }
     }
 }

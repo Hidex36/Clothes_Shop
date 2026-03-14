@@ -2,6 +2,7 @@ using Clothes_shop.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Clothes_shop.Models;
+using Clothes_shop.Repositories;
 
 namespace Clothes_shop
 {
@@ -32,6 +33,8 @@ namespace Clothes_shop
                 .AddEntityFrameworkStores<AppDbContext>();
 
             builder.Services.AddDistributedMemoryCache();
+            builder.Services.AddScoped<Cart>(sp => Cart.GetCart(sp));
+            builder.Services.AddTransient<IOrderResponsitory, OrderResponsitory>();
             builder.Services.AddSession(options =>
             {
                 options.IdleTimeout = TimeSpan.FromMinutes(30);

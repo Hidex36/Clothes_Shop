@@ -1,1 +1,115 @@
 ﻿@model Clothes_shop.Models.ViewModels.ProductByCategoryViewModel
+
+
+@{
+    ViewData["Title"] = ViewData["CategoryName"] ?? "Sản Phẩm";
+    Layout = "_Layout";
+}
+
+<div class="container-fluid mt-4">
+    <div class="row px-xl-5">
+        <div class="col-lg-2 col-md-3">
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-primary text-white py-3">
+                    <h6 class="m-0 font-weight-bold">Danh mục</h6>
+                </div>
+                <div class="list-group list-group-flush">
+                    @await Component.InvokeAsync("CategoryMenu", new { isHeader = false })
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-10 col-md-9">
+            <div class="d-flex align-items-center justify-content-between mb-3 border-bottom pb-2">
+                <h5 class="text-uppercase fw-bold text-primary">@Model.CategoryName</h5>
+                <span class="text-muted small">Tìm thấy @(Model.Products?.Count() ?? 0) sản phẩm</span>
+            </div>
+
+            <div class="row">
+                @if (Model.Products != null && Model.Products.Any())
+                {
+                    @foreach (var item in Model.Products) // Lặp qua danh sách bên trong ViewModel
+                    {
+                        <div class="col-xl-3 col-lg-3 col-md-4 col-6 mb-4">
+                            <div class="card h-100 shadow-sm border-0 product-card transition">
+                                <div class="position-relative overflow-hidden bg-light" style="border-radius: 12px 12px 0 0;">
+                                    <img src="@item.ImageUrl" class="card-img-top img-fluid" alt="@item.Name"
+                                         style="height: 300px; object-fit: cover;">
+
+                                    @if (item.quantity <= 0)
+                                    {
+                                        <div class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center" style="background: rgba(255,255,255,0.6);">
+                                            <span class="badge bg-danger px-3 py-2 shadow">Hết hàng</span>
+                                        </div>
+                                    }
+                                </div>
+
+                                <div class="card-body d-flex flex-column p-3">
+                                    <h4 class="card-title text-dark fw-bold mb-1 text-truncate" title="@item.Name">
+                                        @item.Name
+                                    </h4>
+
+                                    <div class="d-flex align-items-center mb-2">
+                                        <span class="text-danger fw-bold fs-5">@item.Price.ToString("#,##0")₫</span>
+                                    </div>
+
+                                    <p class="card-text text-muted small mb-3" style="height: 40px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;">
+                                        @item.Description
+                                    </p>
+
+                                    <div class="mt-auto">
+                                        <div class="row g-2">
+                                            <div class="col-8">
+                                                <button class="btn btn-dark w-100 @(item.quantity <= 0 ? "disabled" : "")">
+                                                    <i class="bi bi-cart-plus me-1"></i> Mua
+                                                </button>
+                                            </div>
+                                            <div class="col-4">
+                                                <a href="/Product/Details/@item.Id" class="btn btn-outline-secondary w-100">
+                                                    <i class="bi bi-eye"></i>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="col-12 text-center py-5">
+                        <i class="bi bi-box-seam display-1 text-muted"></i>
+                        <p class="mt-3 text-secondary">Hiện chưa có sản phẩm nào trong mục này.</p>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .product-card {
+        border-radius: 12px;
+        transition: all 0.3s ease;
+    }
+
+        .product-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 1rem 3rem rgba(0,0,0,.1) !important;
+        }
+
+    .transition {
+        transition: 0.3s;
+    }
+
+    @@media (max-width: 576px) {
+        .product-card img {
+            height: 160px !important;
+        }
+
+        .card-title {
+            font-size: 0.85rem;
+        }
+    }
+</style>

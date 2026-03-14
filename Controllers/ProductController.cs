@@ -15,34 +15,33 @@ namespace Clothes_shop.Controllers
         }
         public IActionResult Index()
         {
-            return View();
+            var product = _context.Products.Include(p => p.Category).ToList();
+            return View(product);
         }
 
         [HttpGet]
-        public IActionResult ProductByCategory(int id) 
+        public IActionResult ProductByCategory(int categoryId) 
         {
-            var products = _context.Products
-                .Include(p => p.Category)
-                .Where(p => p.CategoryId == id) 
-                .ToList();
+            var category = _context.Categories.FirstOrDefault(c => c.Id == categoryId);
 
-            if (!products.Any())
+            if (category == null)
             {
-                var category = _context.Categories.Find(id);
-                return View(new ProductByCategoryViewModel
-                {
-                    CategoryId = id,
-                    CategoryName = category?.Name ?? "Danh mục không tồn tại",
-                    Products = new List<Products>()
-                });
+                // Nếu vào đây nghĩa là ID truyền lên không khớp với bất kỳ dòng nào trong bảng Categories
+                return NotFound();
             }
 
-            // 3. Nếu có sản phẩm
+            // 2. Lấy danh sách sản phẩm
+            var products = _context.Products
+                .Include(p => p.Category)
+                .Where(p => p.CategoryId == categoryId)
+                .ToList();
+
+            // 3. Đổ dữ liệu vào ViewModel (Luôn trả về Model, dù list products rỗng hay có)
             var result = new ProductByCategoryViewModel
             {
-                CategoryId = id,
-                CategoryName = products.First().Category.Name,
-                Products = products
+                CategoryId = category.Id,
+                CategoryName = category.Name, // Kiểm tra lại Model của bạn là .Name hay .CategoryName
+                Products = products ?? new List<Products>()
             };
 
             return View(result);

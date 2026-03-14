@@ -1,5 +1,6 @@
 wwwroot\css\site.css
 wwwroot\favicon.ico
+wwwroot\images\products\18d7dc21-547a-4636-a692-55c6f3e2f41d.jpg
 wwwroot\images\products\b1b6bf89-e689-41ed-bb2e-3bc49140a16f.jpg
 wwwroot\images\products\b1cd80e1-9ddb-4280-8f49-3da68330a610.jpg
 wwwroot\js\site.js
