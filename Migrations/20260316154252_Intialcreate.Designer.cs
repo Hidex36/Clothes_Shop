@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Clothes_shop.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260314074412_UpdateDB")]
-    partial class UpdateDB
+    [Migration("20260316154252_Intialcreate")]
+    partial class Intialcreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -59,9 +59,6 @@ namespace Clothes_shop.Migrations
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
-
                     b.Property<decimal>("UnitPrice")
                         .HasColumnType("decimal(18,2)");
 
@@ -97,12 +94,15 @@ namespace Clothes_shop.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("UsersId")
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UsersId");
+                    b.HasIndex("UserId");
 
                     b.ToTable("Orders");
                 });
@@ -161,7 +161,6 @@ namespace Clothes_shop.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Address")
-                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
@@ -177,7 +176,6 @@ namespace Clothes_shop.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("DateOfBirth")
-                        .IsRequired()
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
@@ -188,7 +186,6 @@ namespace Clothes_shop.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("FullName")
-                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
@@ -218,7 +215,7 @@ namespace Clothes_shop.Migrations
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Sex")
+                    b.Property<int?>("Sex")
                         .HasColumnType("int");
 
                     b.Property<bool>("TwoFactorEnabled")
@@ -239,6 +236,29 @@ namespace Clothes_shop.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
+                });
+
+            modelBuilder.Entity("Clothes_shop.Models.WishList", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("WishLists");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<int>", b =>
@@ -395,9 +415,11 @@ namespace Clothes_shop.Migrations
 
             modelBuilder.Entity("Clothes_shop.Models.Orders", b =>
                 {
-                    b.HasOne("Clothes_shop.Models.Users", null)
+                    b.HasOne("Clothes_shop.Models.Users", "User")
                         .WithMany("Orders")
-                        .HasForeignKey("UsersId");
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Clothes_shop.Models.Products", b =>
@@ -409,6 +431,25 @@ namespace Clothes_shop.Migrations
                         .IsRequired();
 
                     b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("Clothes_shop.Models.WishList", b =>
+                {
+                    b.HasOne("Clothes_shop.Models.Products", "Product")
+                        .WithMany("WishLists")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Clothes_shop.Models.Users", "User")
+                        .WithMany("WishLists")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
@@ -472,9 +513,16 @@ namespace Clothes_shop.Migrations
                     b.Navigation("OrderDetails");
                 });
 
+            modelBuilder.Entity("Clothes_shop.Models.Products", b =>
+                {
+                    b.Navigation("WishLists");
+                });
+
             modelBuilder.Entity("Clothes_shop.Models.Users", b =>
                 {
                     b.Navigation("Orders");
+
+                    b.Navigation("WishLists");
                 });
 #pragma warning restore 612, 618
         }

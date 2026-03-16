@@ -17,5 +17,7 @@ namespace Clothes_shop.Models
 
         public int CategoryId { get; set; }
         public Categories? Category { get; set; }
+
+        public  virtual ICollection<WishList>? WishLists { get; set; } =new List<WishList>();
     }
 }

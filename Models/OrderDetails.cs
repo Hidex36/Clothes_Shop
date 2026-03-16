@@ -7,9 +7,11 @@ namespace Clothes_shop.Models
         public int Id { get; set; }
 
         public int OrderId { get; set; }
+        [ForeignKey("OrderId")]
         public virtual Orders Order { get; set; }
 
         public int ProductId { get; set; }
+        [ForeignKey("ProductId")]
         public virtual Products Product { get; set; }
         public int Quantity { get; set; }
 

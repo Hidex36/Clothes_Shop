@@ -1,5 +1,287 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model Clothes_shop.Models.Users
+
 @{
+	Layout = "_Layout";
 }
+
+<div class="container py-5">
+	<div class="row g-4">
+
+		<!-- LEFT -->
+
+		<div class="col-lg-4">
+
+			<div class="card border-0 shadow-sm p-4 text-center h-100">
+
+				<div class="text-center mb-3">
+
+					<img src="@(string.IsNullOrEmpty(Model.AvatarImageUrl) ? "/images/default-avatar.png" : Model.AvatarImageUrl)"
+						 class="rounded-circle border shadow"
+						 width="150"
+						 height="150"
+						 style="object-fit:cover" />
+
+				</div>
+
+				<form asp-action="UpdateAvatar"
+					  method="post"
+					  enctype="multipart/form-data">
+
+					<input type="file"
+						   name="avatar"
+						   id="avatarInput"
+						   class="d-none"
+						   onchange="this.form.submit()" />
+
+					<button type="button"
+							class="btn btn-dark btn-sm px-4"
+							onclick="document.getElementById('avatarInput').click()">
+						Thay đổi ảnh
+					</button>
+
+				</form>
+
+				<hr class="my-4">
+
+				<div class="text-start mb-3">
+
+					<p class="small text-muted fw-bold mb-1">
+						Email
+					</p>
+
+					<p class="fw-semibold">
+						@(string.IsNullOrEmpty(Model.Email) ? "Chưa cập nhật" : Model.Email)
+					</p>
+
+				</div>
+
+				<div class="text-start d-flex justify-content-between align-items-center">
+
+					<div>
+
+						<p class="small text-muted fw-bold mb-1">
+							Mật khẩu
+						</p>
+
+						<p class="fw-semibold">
+							••••••••
+						</p>
+
+					</div>
+
+					<a asp-action="ChangePassword" class="small text-decoration-none">
+						Thay đổi
+					</a>
+
+				</div>
+
+			</div>
+
+		</div>
+
+
+		<!-- RIGHT -->
+
+		<div class="col-lg-8">
+
+			<div class="card border-0 shadow-sm p-4 h-100 d-flex flex-column">
+
+				<form asp-action="Profile" method="post">
+
+					<div class="d-flex justify-content-between align-items-center mb-4">
+
+						<h4 class="fw-bold mb-0">
+							Hồ sơ cá nhân
+						</h4>
+
+						@if (ViewBag.EditField != null)
+						{
+							<button type="submit"
+									class="btn btn-primary">
+								Lưu
+							</button>
+						}
+
+					</div>
+
+					@if (TempData["Message"] != null)
+					{
+						<div class="alert alert-success py-2">
+							@TempData["Message"]
+						</div>
+					}
+
+					<!-- NAME -->
+
+					<div class="row border-bottom py-3 align-items-center">
+
+						<div class="col-sm-3 fw-bold text-muted">
+							Họ tên
+						</div>
+
+						<div class="col-sm-7">
+
+							@if (ViewBag.EditField == "FullName")
+							{
+								<input asp-for="FullName" class="form-control" />
+							}
+							else
+							{
+								<span>
+									@(string.IsNullOrEmpty(Model.FullName) ? "Chưa cập nhật" : Model.FullName)
+								</span>
+							}
+
+						</div>
+
+						<div class="col-sm-2 text-end">
+
+							<a asp-action="Profile"
+							   asp-route-edit="FullName">
+								Thay đổi
+							</a>
+
+						</div>
+
+					</div>
+
+
+					<!-- ADDRESS -->
+
+					<div class="row border-bottom py-3 align-items-center">
+
+						<div class="col-sm-3 fw-bold text-muted">
+							Địa chỉ
+						</div>
+
+						<div class="col-sm-7">
+
+							@if (ViewBag.EditField == "Address")
+							{
+								<input asp-for="Address" class="form-control" />
+							}
+							else
+							{
+								<span>
+									@(string.IsNullOrEmpty(Model.Address) ? "Chưa cập nhật" : Model.Address)
+								</span>
+							}
+
+						</div>
+
+						<div class="col-sm-2 text-end">
+
+							<a asp-action="Profile"
+							   asp-route-edit="Address">
+								Thay đổi
+							</a>
+
+						</div>
+
+					</div>
+
+
+					<!-- DOB -->
+
+					<div class="row border-bottom py-3 align-items-center">
+
+						<div class="col-sm-3 fw-bold text-muted">
+							Ngày sinh
+						</div>
+
+						<div class="col-sm-7">
+
+							@if (ViewBag.EditField == "DateOfBirth")
+							{
+								<input asp-for="DateOfBirth"
+									   type="date"
+									   class="form-control" />
+							}
+							else
+							{
+								<span>
+									@(Model.DateOfBirth == null ? "Chưa cập nhật" : Model.DateOfBirth.Value.ToString("dd/MM/yyyy"))
+								</span>
+							}
+
+						</div>
+
+						<div class="col-sm-2 text-end">
+
+							<a asp-action="Profile"
+							   asp-route-edit="DateOfBirth">
+								Thay đổi
+							</a>
+
+						</div>
+
+					</div>
+
+
+					<!-- SEX -->
+
+					<div class="row border-bottom py-3 align-items-center">
+
+						<div class="col-sm-3 fw-bold text-muted">
+							Giới tính
+						</div>
+
+						<div class="col-sm-7">
+
+							@if (ViewBag.EditField == "Sex")
+							{
+								<select asp-for="Sex" class="form-select">
+
+									<option value="">Chọn</option>
+									<option value="1">Nam</option>
+									<option value="0">Nữ</option>
+
+								</select>
+							}
+							else
+							{
+								@if (Model.Sex == null)
+								{
+									<span>Chưa cập nhật</span>
+								}
+								else if (Model.Sex == 1)
+								{
+									<span>Nam</span>
+								}
+								else
+								{
+									<span>Nữ</span>
+								}
+							}
+
+						</div>
+
+						<div class="col-sm-2 text-end">
+
+							<a asp-action="Profile"
+							   asp-route-edit="Sex">
+								Thay đổi
+							</a>
+
+						</div>
+
+					</div>
+
+				</form>
+
+				<form asp-action="Logout"
+					  method="post"
+					  class="mt-auto d-flex justify-content-end">
+
+					<button class="btn btn-link text-danger p-0">
+						Đăng xuất
+					</button>
+
+				</form>
+
+			</div>
+
+		</div>
+
+	</div>
+</div>

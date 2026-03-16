@@ -19,12 +19,6 @@ namespace Clothes_shop.Repositories
         }
         public void CreateOrder(Orders order)
         {
-            order.OrderDetails = _cart.GetAllItems().Select(i => new OrderDetails
-            {
-                ProductId = i.Product.Id,
-                Quantity = i.Quantity,
-                UnitPrice = i.Product.Price
-            }).ToList();
             _context.Orders.Add(order);
             _context.SaveChanges();
         }
