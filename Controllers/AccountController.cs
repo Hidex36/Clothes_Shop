@@ -1,21 +1,31 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Clothes_shop.Data;
+using Clothes_shop.Models;
 using Clothes_shop.Models.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using Clothes_shop.Models; // Đảm bảo namespace này chứa class Users của bạn
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace Clothes_shop.Controllers
 {
     public class AccountController : Controller
     {
-        // Thay đổi từ IdentityUser sang Users
+        private readonly AppDbContext _context;
         private readonly UserManager<Users> userManager;
         private readonly SignInManager<Users> signInManager;
 
-        public AccountController(UserManager<Users> userManager, SignInManager<Users> signInManager)
+        public AccountController(
+            AppDbContext context,
+            UserManager<Users> userManager,
+            SignInManager<Users> signInManager)
         {
+            _context = context;
             this.userManager = userManager;
             this.signInManager = signInManager;
         }
+
+        // ================= REGISTER =================
 
         [HttpGet]
         public IActionResult Register()
@@ -26,30 +36,34 @@ namespace Clothes_shop.Controllers
         [HttpPost]
         public async Task<IActionResult> Register(RegisterViewmodel model)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
+                return View(model);
+
+            var user = new Users
             {
-                var user = new Users
-                {
-                    UserName = model.Email,
-                    Email = model.Email,
-                    CreatedAt = DateTime.Now
-                };
+                UserName = model.Email,
+                Email = model.Email,
+                CreatedAt = DateTime.Now
+            };
 
-                var Result = await userManager.CreateAsync(user, model.Password);
-                if (Result.Succeeded)
-                {
-                    await signInManager.SignInAsync(user, isPersistent: false);
-                    return RedirectToAction("Index", "Product");
-                }
+            var result = await userManager.CreateAsync(user, model.Password);
 
-                // Hiển thị lỗi từ Identity nếu đăng ký thất bại (ví dụ mật khẩu yếu)
-                foreach (var error in Result.Errors)
-                {
-                    ModelState.AddModelError(string.Empty, error.Description);
-                }
+            if (result.Succeeded)
+            {
+                await signInManager.SignInAsync(user, false);
+                return RedirectToAction("Index", "Product");
             }
+
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError("", error.Description);
+            }
+
             return View(model);
         }
+
+
+        // ================= LOGIN =================
 
         [HttpGet]
         public IActionResult Login()
@@ -60,26 +74,162 @@ namespace Clothes_shop.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                // Identity mặc định dùng UserName để đăng nhập, ở đây bạn đang gán UserName = Email
-                var Result = await signInManager.PasswordSignInAsync(model.Email, model.Password, false,lockoutOnFailure: false);
-
-                if (Result.Succeeded)
-                {
-                    return RedirectToAction("Index", "Product");
-                }
-
-                ModelState.AddModelError(string.Empty, "Email hoặc mật khẩu không chính xác.");
+                return View(model);
             }
+
+            var result = await signInManager.PasswordSignInAsync(
+                model.Email,
+                model.Password,
+                false,
+                false
+            );
+
+            if (result.Succeeded)
+            {
+                return RedirectToAction("Index", "Product");
+            }
+
+            ModelState.AddModelError("", "Email hoặc mật khẩu không đúng");
+
             return View(model);
         }
+
+        // ================= LOGOUT =================
 
         [HttpPost]
         public async Task<IActionResult> Logout()
         {
             await signInManager.SignOutAsync();
+
             return RedirectToAction("Index", "Product");
+        }
+
+        // ================= PROFILE =================
+
+        [Authorize]
+        [HttpGet]
+        public async Task<IActionResult> Profile(string? edit)
+        {
+            var user = await userManager.GetUserAsync(User);
+
+            if (user == null)
+                return RedirectToAction("Login");
+
+            ViewBag.EditField = edit;
+
+            return View(user);
+        }
+
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> Profile(Users model)
+        {
+            var user = await userManager.GetUserAsync(User);
+
+            if (user == null)
+                return RedirectToAction("Login");
+
+            user.FullName = model.FullName;
+            user.Address = model.Address;
+            user.DateOfBirth = model.DateOfBirth;
+            user.Sex = model.Sex;
+
+            var result = await userManager.UpdateAsync(user);
+
+            if (result.Succeeded)
+            {
+                TempData["Message"] = "Cập nhật thành công";
+            }
+
+            return RedirectToAction("Profile");
+        }
+
+
+        // ================= UPDATE AVATAR =================
+
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> UpdateAvatar(IFormFile avatar)
+        {
+            var user = await userManager.GetUserAsync(User);
+
+            if (user == null)
+                return RedirectToAction("Login");
+
+            if (avatar != null && avatar.Length > 0)
+            {
+                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(avatar.FileName);
+
+                var folder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/avatars");
+
+                if (!Directory.Exists(folder))
+                    Directory.CreateDirectory(folder);
+
+                var path = Path.Combine(folder, fileName);
+
+                using (var stream = new FileStream(path, FileMode.Create))
+                {
+                    await avatar.CopyToAsync(stream);
+                }
+
+                user.AvatarImageUrl = "/images/avatars/" + fileName;
+
+                await userManager.UpdateAsync(user);
+            }
+
+            return RedirectToAction("Profile");
+        }
+
+        //Wishlist
+        [HttpPost]
+        public IActionResult Toggle(int productId)
+        {
+            if (!User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+            var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+            var item = _context.Wishlists
+                .FirstOrDefault(x => x.ProductId == productId && x.UserId == userId);
+
+            if (item == null)
+            {
+                _context.Wishlists.Add(new Wishlist
+                {
+                    ProductId = productId,
+                    UserId = userId
+                });
+            }
+            else
+            {
+                _context.Wishlists.Remove(item);
+            }
+
+            _context.SaveChanges();
+
+            return Redirect(Request.Headers["Referer"].ToString());
+        }
+
+        public IActionResult Wishlist()
+        {
+            if (!User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+            var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+            var products = _context.Wishlists
+                .Where(w => w.UserId == userId)
+                .Include(w => w.Product)
+                .Select(w => w.Product)
+                .ToList();
+
+            return View(products);
         }
     }
 }

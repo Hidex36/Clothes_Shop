@@ -1,0 +1,31 @@
+﻿@model Clothes_shop.Models.Users
+
+<ul class="dropdown-menu dropdown-menu-end">
+
+    <li class="px-3 py-2 fw-semibold">
+        @Model.Email
+    </li>
+
+    <li>
+        <a asp-controller="Account"
+           asp-action="Profile"
+           class="dropdown-item">
+            Thông tin cá nhân
+        </a>
+    </li>
+    <li>
+        <a asp-controller="Account"
+           asp-action="WishList"
+           class="dropdown-item">
+            Yêu thích
+        </a>
+    </li>
+
+    <li>
+        <a asp-action="Logout"
+           class="dropdown-item">
+            Đăng xuất
+        </a>
+    </li>
+
+</ul>

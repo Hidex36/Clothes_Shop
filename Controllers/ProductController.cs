@@ -1,8 +1,9 @@
 ﻿using Clothes_shop.Data;
 using Clothes_shop.Models;
+using Clothes_shop.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Clothes_shop.Models.ViewModels;
+using System.Security.Claims;
 
 namespace Clothes_shop.Controllers
 {
@@ -15,8 +16,23 @@ namespace Clothes_shop.Controllers
         }
         public IActionResult Index()
         {
-            var product = _context.Products.Include(p => p.Category).ToList();
-            return View(product);
+            var products = _context.Products
+                .Include(p => p.Category)
+                .ToList();
+
+            if (User.Identity.IsAuthenticated)
+            {
+                var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+                var wishlist = _context.Wishlists
+                    .Where(w => w.UserId == userId)
+                    .Select(w => w.ProductId)
+                    .ToList();
+
+                ViewBag.Wishlist = wishlist;
+            }
+
+            return View(products);
         }
 
         [HttpGet]
@@ -46,5 +62,22 @@ namespace Clothes_shop.Controllers
 
             return View(result);
         }
+
+        //Details
+        public IActionResult Details(int id)
+        {
+            var product = _context.Products
+                .Include(p => p.Category)
+                .FirstOrDefault(p => p.Id == id);
+
+            if (product == null)
+            {
+                return NotFound();
+            }
+
+            return View(product);
+        }
+
+
     }
 }

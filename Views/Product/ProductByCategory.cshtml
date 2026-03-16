@@ -4,6 +4,7 @@
 @{
     ViewData["Title"] = ViewData["CategoryName"] ?? "Sản Phẩm";
     Layout = "_Layout";
+    var wishlist = ViewBag.Wishlist as List<int>;
 }
 
 <div class="container-fluid mt-4">
@@ -33,6 +34,22 @@
                         <div class="col-xl-3 col-lg-3 col-md-4 col-6 mb-4">
                             <div class="card h-100 shadow-sm border-0 product-card transition">
                                 <div class="position-relative overflow-hidden bg-light" style="border-radius: 12px 12px 0 0;">
+
+                                    <!-- Wishlist -->
+                                    <form asp-controller="Account"
+                                          asp-action="Toggle"
+                                          method="post"
+                                          style="position:absolute; top:10px; right:10px; z-index:10;">
+
+                                        <input type="hidden" name="productId" value="@item.Id" />
+
+                                        <button type="submit"
+                                                style="background:none;border:none;font-size:20px;">
+                                            <i class="bi @(wishlist != null && wishlist.Contains(item.Id)
+                                                 ? "bi-heart-fill text-danger"
+                                                 : "bi-heart")"></i>
+                                        </button>
+                                    </form>
                                     <img src="@item.ImageUrl" class="card-img-top img-fluid" alt="@item.Name"
                                          style="height: 300px; object-fit: cover;">
 
