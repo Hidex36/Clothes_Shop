@@ -10,15 +10,19 @@
     <Compile Remove="Areas\Admin\Data\**" />
     <Compile Remove="Areas\Admin\Models\**" />
     <Compile Remove="Areas\Admin\Views\Order\**" />
+    <Compile Remove="wwwroot\image\**" />
     <Content Remove="Areas\Admin\Data\**" />
     <Content Remove="Areas\Admin\Models\**" />
     <Content Remove="Areas\Admin\Views\Order\**" />
+    <Content Remove="wwwroot\image\**" />
     <EmbeddedResource Remove="Areas\Admin\Data\**" />
     <EmbeddedResource Remove="Areas\Admin\Models\**" />
     <EmbeddedResource Remove="Areas\Admin\Views\Order\**" />
+    <EmbeddedResource Remove="wwwroot\image\**" />
     <None Remove="Areas\Admin\Data\**" />
     <None Remove="Areas\Admin\Models\**" />
     <None Remove="Areas\Admin\Views\Order\**" />
+    <None Remove="wwwroot\image\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -32,10 +36,6 @@
     <PackageReference Include="Microsoft.Extensions.Identity.Stores" Version="8.0.24" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.23" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="wwwroot\image\" />
   </ItemGroup>
 
 </Project>

@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace Clothes_shop.Models
 {
@@ -16,10 +17,11 @@ namespace Clothes_shop.Models
         public string ShippingPhone { get; set; }
         public DateTime OrderDate { get; set; } = DateTime.Now;
         public int? UserId { get; set; }
+        [ValidateNever]
         [ForeignKey("UserId")]
         public Users User { get; set; }
-        public int Status { get; set; }
-        [BindNever]
+        public OrderStatus Status { get; set; } = OrderStatus.Pending;
+        [ValidateNever]
         public ICollection<OrderDetails> OrderDetails { get; set; }
     }
 }

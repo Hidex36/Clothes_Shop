@@ -1,5 +1,84 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model IEnumerable<Clothes_shop.Models.Orders>
+
 @{
+    ViewData["Title"] = "Đơn hàng của tôi";
 }
+
+<style>
+    /* Hiệu ứng khi di chuột vào item */
+    .order-item-card {
+        transition: all 0.3s ease;
+        cursor: pointer;
+        border: 1px solid rgba(0,0,0,.125);
+    }
+
+        .order-item-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+            border-color: #007bff;
+        }
+</style>
+
+<div class="container mt-4">
+    <h2 class="mb-4">Lịch sử đơn hàng</h2>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info">Bạn chưa có đơn hàng nào. <a href="/">Mua sắm ngay!</a></div>
+    }
+    else
+    {
+        @foreach (var order in Model)
+        {
+            <div class="card mb-4 shadow-sm position-relative order-item-card">
+
+                <a asp-action="OrderDetail" asp-route-id="@order.Id" class="stretched-link"></a>
+
+                <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+                    <span><strong>Mã đơn hàng: #@order.Id</strong> - @order.OrderDate.ToString("dd/MM/yyyy HH:mm")</span>
+                    <span class="badge @(order.Status == 0 ? "bg-warning text-dark" : "bg-success")">
+                        @(order.Status == 0 ? "Đang xử lý" : "Đã giao hàng")
+                    </span>
+                </div>
+                <div class="card-body">
+                    <table class="table table-borderless mb-0">
+                        <thead>
+                            <tr class="text-muted small">
+                                <th>Sản phẩm</th>
+                                <th class="text-center">Số lượng</th>
+                                <th class="text-end">Thành tiền</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in order.OrderDetails.Take(2)) // Hiển thị tạm 2 món đầu
+                            {
+                                <tr>
+                                    <td>@item.Product?.Name</td>
+                                    <td class="text-center">@item.Quantity</td>
+                                    <td class="text-end">@((item.Quantity * item.UnitPrice).ToString("N0")) đ</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+
+                    @if (order.OrderDetails.Count > 2)
+                    {
+                        <p class="text-muted small ms-2">... và @(order.OrderDetails.Count - 2) sản phẩm khác</p>
+                    }
+
+                    <hr />
+                    <div class="d-flex justify-content-between align-items-end">
+                        <div>
+                            <p class="mb-1 small"><strong>Người nhận:</strong> @order.Name</p>
+                            <p class="mb-0 small text-muted">@order.ShippingAddress</p>
+                        </div>
+                        <div class="text-end">
+                            <span class="text-muted small">Tổng cộng:</span>
+                            <h5 class="text-danger mb-0">@order.OrderDetails.Sum(x => x.Quantity * x.UnitPrice).ToString("N0") đ</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+</div>

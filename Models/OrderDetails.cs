@@ -18,6 +18,7 @@ namespace Clothes_shop.Models
         [Column(TypeName = "decimal(18,2)")]
         public decimal UnitPrice { get; set; }
 
-
+        [NotMapped]
+        public decimal TotalPrice => Quantity * UnitPrice;
     }
 }

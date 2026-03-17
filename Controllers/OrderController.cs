@@ -4,6 +4,7 @@ using Clothes_shop.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Clothes_shop.Controllers
 {
@@ -34,36 +35,25 @@ namespace Clothes_shop.Controllers
         {
             var cart = HttpContext.Session.GetJson<Cart>("Cart") ?? new Cart();
 
+            if (cart.Items.Count == 0)
+            {
+                ModelState.AddModelError("", "Giỏ hàng của bạn đang trống!");
+            }
+
             if (ModelState.IsValid)
             {
                 var currentUser = await _userManager.GetUserAsync(User);
                 if (currentUser != null)
                 {
-                    // Bây giờ cả hai đều là kiểu int, gán trực tiếp rất mượt
                     order.UserId = currentUser.Id;
                 }
-                if (cart.Items.Count == 0)
-                {
-                    ModelState.AddModelError("", "Giỏ hàng của bạn đang trống!");
-                    ViewBag.Cart = cart;
-                    return View(order);
-                }
+                _orderResponsitory.CreateOrder(order, cart);
 
-                if (ModelState.IsValid)
-                {
-                    order.OrderDetails = cart.Items.Select(i => new OrderDetails
-                    {
-                        ProductId = i.Product.Id,
-                        Quantity = i.Quantity,
-                        UnitPrice = i.Product.Price
-                    }).ToList();
+                // Xóa giỏ hàng sau khi đặt thành công
+                HttpContext.Session.Remove("Cart");
+                _cart.ClearCart();
 
-                    _orderResponsitory.CreateOrder(order);
-
-                    HttpContext.Session.Remove("Cart");
-
-                    return RedirectToAction("ThankYou");
-                }
+                return RedirectToAction("ThankYou");
             }
 
             ViewBag.Cart = cart;
@@ -75,5 +65,46 @@ namespace Clothes_shop.Controllers
             _cart.ClearCart();
             return View();
         }
+
+        [Authorize]
+        [HttpGet]
+        public async Task<IActionResult> OrderList()
+        {
+            var currentUser = await _userManager.GetUserAsync(User);
+            if (currentUser == null)
+            {
+                return Content("không tìm thấy user");
+            }
+
+            var order = _orderResponsitory.GetAllOrders()
+                .Where(i => i.UserId == currentUser.Id)
+                .OrderByDescending(i => i.OrderDate)
+                .ToList();
+            return View(order);
+        }
+
+
+        [Authorize]
+        [HttpGet]
+        public async Task<IActionResult> OrderDetail(int id)
+        {
+            var currentUser = await _userManager.GetUserAsync(User);
+            if (currentUser == null)
+            {
+                return Content("không tìm thấy user");
+            }
+
+
+            var order = await _orderResponsitory.GetOrderById(id);
+
+
+            if (order == null || order.UserId != currentUser.Id)
+            {
+                return NotFound();
+            }
+
+            return View(order);
+        }
+
     }
 }
