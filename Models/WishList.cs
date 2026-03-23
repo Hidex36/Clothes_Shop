@@ -6,7 +6,6 @@
 
         public int UserId { get; set; }
         public Users User { get; set; }
-
         public int ProductId { get; set; }
         public Products Product { get; set; }
     }

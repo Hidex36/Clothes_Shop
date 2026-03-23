@@ -20,48 +20,60 @@
                     </div>
 
                     <div class="list-group list-group-flush">
-
-                        <a asp-controller="Dashboard" asp-action="Index"
-                           class="list-group-item list-group-item-action border-0 d-flex align-items-center py-4 px-4 fs-5 text-secondary">
-                            <i class="bi bi-speedometer2 me-3 fs-4"></i>
-                            <span class="fw-bold">Trang Chủ</span>
-                            <i class="bi bi-chevron-right ms-auto fs-6 opacity-50"></i>
-                        </a>
-
-                        <a asp-controller="Categories" asp-action="Index"
-                           class="list-group-item list-group-item-action border-0 d-flex align-items-center py-4 px-4 fs-5 text-secondary">
-                            <i class="bi bi-grid-3x3-gap me-3 fs-4"></i>
-                            <span class="fw-bold">Quản Lý Danh Mục</span>
-                            <i class="bi bi-chevron-right ms-auto fs-6 opacity-50"></i>
-                        </a>
-
-                        <a asp-controller="Product" asp-action="Index"
-                           class="list-group-item list-group-item-action border-0 d-flex align-items-center py-4 px-4 fs-5 text-secondary">
-                            <i class="bi bi-box-seam me-3 fs-4"></i>
-                            <span class="fw-bold">Quản Lý Sản Phẩm</span>
-                            <i class="bi bi-chevron-right ms-auto fs-6 opacity-50"></i>
-                        </a>
-
-                        <a asp-controller="Order" asp-action="Index"
-                           class="list-group-item list-group-item-action border-0 d-flex align-items-center py-4 px-4 fs-5 text-secondary">
-                            <i class="bi bi-receipt me-3 fs-4"></i>
-                            <span class="fw-bold">Danh Sách Đơn Đặt Hàng</span>
-                            <i class="bi bi-chevron-right ms-auto fs-6"></i>
-                        </a>
-
-                        <a asp-controller="Employee" asp-action="Index"
-                           class="list-group-item list-group-item-action border-0 d-flex align-items-center py-4 px-4 fs-5 text-secondary">
-                            <i class="bi bi-person-badge me-3 fs-4"></i>
-                            <span class="fw-bold">Quản lý Nhân sự</span>
-                            <i class="bi bi-chevron-right ms-auto fs-6 opacity-50"></i>
-                        </a>
-
-                        <a asp-controller="Customer" asp-action="Index"
-                           class="list-group-item list-group-item-action border-0 d-flex align-items-center py-4 px-4 fs-5 text-secondary">
-                            <i class="bi bi-people me-3 fs-4"></i>
-                            <span class="fw-bold">Khách Hàng</span>
-                            <i class="bi bi-chevron-right ms-auto fs-6 opacity-50"></i>
-                        </a>
+                        @if (User.IsInRole("Admin") || User.IsInRole("Staff"))
+                        {
+                            <a asp-controller="Dashboard" asp-action="Index"
+                               class="list-group-item list-group-item-action border-0 d-flex align-items-center py-4 px-4 fs-5 text-secondary">
+                                <i class="bi bi-speedometer2 me-3 fs-4"></i>
+                                <span class="fw-bold">Trang Chủ</span>
+                                <i class="bi bi-chevron-right ms-auto fs-6 opacity-50"></i>
+                            </a>
+                        }
+                        @if (User.IsInRole("Admin") || User.IsInRole("Staff"))
+                        {
+                            <a asp-controller="Categories" asp-action="Index"
+                               class="list-group-item list-group-item-action border-0 d-flex align-items-center py-4 px-4 fs-5 text-secondary">
+                                <i class="bi bi-grid-3x3-gap me-3 fs-4"></i>
+                                <span class="fw-bold">Quản Lý Danh Mục</span>
+                                <i class="bi bi-chevron-right ms-auto fs-6 opacity-50"></i>
+                            </a>
+                        }
+                        @if (User.IsInRole("Admin") || User.IsInRole("Staff"))
+                        {
+                            <a asp-controller="Product" asp-action="Index"
+                                class="list-group-item list-group-item-action border-0 d-flex align-items-center py-4 px-4 fs-5 text-secondary">
+                                <i class="bi bi-box-seam me-3 fs-4"></i>
+                                <span class="fw-bold">Quản Lý Sản Phẩm</span>
+                                <i class="bi bi-chevron-right ms-auto fs-6 opacity-50"></i>
+                            </a>
+                        }
+                        @if (User.IsInRole("Admin") || User.IsInRole("Staff"))
+                        {
+                            <a asp-controller="Order" asp-action="Index"
+                               class="list-group-item list-group-item-action border-0 d-flex align-items-center py-4 px-4 fs-5 text-secondary">
+                                <i class="bi bi-receipt me-3 fs-4"></i>
+                                <span class="fw-bold">Danh Sách Đơn Đặt Hàng</span>
+                                <i class="bi bi-chevron-right ms-auto fs-6"></i>
+                            </a>
+                        }
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <a asp-controller="Staff" asp-action="Index"
+                               class="list-group-item list-group-item-action border-0 d-flex align-items-center py-4 px-4 fs-5 text-secondary">
+                                <i class="bi bi-person-badge me-3 fs-4"></i>
+                                <span class="fw-bold">Quản lý Nhân sự</span>
+                                <i class="bi bi-chevron-right ms-auto fs-6 opacity-50"></i>
+                            </a>
+                        }
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <a asp-controller="Customer" asp-action="Index"
+                               class="list-group-item list-group-item-action border-0 d-flex align-items-center py-4 px-4 fs-5 text-secondary">
+                                <i class="bi bi-people me-3 fs-4"></i>
+                                <span class="fw-bold">Khách Hàng</span>
+                                <i class="bi bi-chevron-right ms-auto fs-6 opacity-50"></i>
+                            </a>
+                        }
                     </div>
                 </div>
             </nav>

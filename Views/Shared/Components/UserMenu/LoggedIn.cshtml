@@ -1,34 +1,33 @@
 ﻿@model Clothes_shop.Models.Users
 
-<ul class="dropdown-menu dropdown-menu-end shadow">
-    <li class="px-3 py-2 fw-semibold border-bottom mb-2 text-primary">
+<ul class="dropdown-menu dropdown-menu-end">
+
+    <li class="px-3 py-2 fw-semibold">
         @Model.Email
     </li>
 
     <li>
-        <a asp-controller="Account" asp-action="Profile" class="dropdown-item">
-            <i class="bi bi-person me-2"></i>Thông tin cá nhân
+        <a asp-controller="Account"
+           asp-action="Profile"
+           class="dropdown-item">
+            Thông tin cá nhân
         </a>
     </li>
     <li>
-        <a asp-controller="Account" asp-action="WishList" class="dropdown-item">
-            <i class="bi bi-heart me-2"></i>Yêu thích
+        <a asp-controller="Account"
+           asp-action="WishList"
+           class="dropdown-item">
+            Yêu thích
         </a>
     </li>
 
     <li>
-        <a asp-controller="Order" asp-action="OrderList" class="dropdown-item">
-            <i class="bi bi-heart me-2"></i>Đơn hàng
-        </a>
-    </li>
-
-    <li><hr class="dropdown-divider"></li>
-
-    <li>
-        <form asp-controller="Account" asp-action="Logout" method="post" id="logoutForm">
-            <button type="submit" class="dropdown-item text-danger">
-                <i class="bi bi-box-arrow-right me-2"></i>Đăng xuất
+        <form asp-area="" asp-controller="Account" asp-action="Logout" method="post">
+            @Html.AntiForgeryToken()
+            <button type="submit" class="dropdown-item">
+                Đăng xuất
             </button>
         </form>
     </li>
+
 </ul>

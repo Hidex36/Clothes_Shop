@@ -4,10 +4,12 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Clothes_shop.Data;
 using Clothes_shop.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Clothes_shop.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = "Admin, Staff")]
     public class ProductController : Controller
     {
         private readonly AppDbContext _context;

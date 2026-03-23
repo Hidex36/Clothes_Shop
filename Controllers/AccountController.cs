@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Claims;
 
 namespace Clothes_shop.Controllers
 {
@@ -15,7 +14,10 @@ namespace Clothes_shop.Controllers
         private readonly UserManager<Users> userManager;
         private readonly SignInManager<Users> signInManager;
 
-        public AccountController(AppDbContext context,UserManager<Users> userManager,SignInManager<Users> signInManager)
+        public AccountController(
+            AppDbContext context,
+            UserManager<Users> userManager,
+            SignInManager<Users> signInManager)
         {
             _context = context;
             this.userManager = userManager;
@@ -25,12 +27,14 @@ namespace Clothes_shop.Controllers
         // ================= REGISTER =================
 
         [HttpGet]
+        [AllowAnonymous]
         public IActionResult Register()
         {
             return View();
         }
 
         [HttpPost]
+        [AllowAnonymous]
         public async Task<IActionResult> Register(RegisterViewmodel model)
         {
             if (!ModelState.IsValid)
@@ -40,14 +44,19 @@ namespace Clothes_shop.Controllers
             {
                 UserName = model.Email,
                 Email = model.Email,
-                CreatedAt =DateTime.Now
+                CreatedAt = DateTime.Now
             };
 
             var result = await userManager.CreateAsync(user, model.Password);
 
             if (result.Succeeded)
             {
+
+                await userManager.AddToRoleAsync(user, "User");
+
+                await signInManager.SignOutAsync();
                 await signInManager.SignInAsync(user, false);
+
                 return RedirectToAction("Index", "Product");
             }
 
@@ -59,42 +68,62 @@ namespace Clothes_shop.Controllers
             return View(model);
         }
 
-
         // ================= LOGIN =================
 
         [HttpGet]
+        [AllowAnonymous]
         public IActionResult Login()
         {
             return View();
         }
 
         [HttpPost]
+        [AllowAnonymous]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
             if (!ModelState.IsValid)
+                return View(model);
+
+            var user = await userManager.FindByEmailAsync(model.Email);
+
+            if (user == null)
             {
+                ModelState.AddModelError("", "Email không tồn tại");
                 return View(model);
             }
-            var result = await signInManager.PasswordSignInAsync(model.Email, model.Password, false, false);
+            var result = await signInManager.CheckPasswordSignInAsync(user, model.Password, false);
+
             if (result.Succeeded)
             {
+                await signInManager.SignInAsync(user, false);
+
+                if (await userManager.IsInRoleAsync(user, "Admin"))
+                {
+                    return RedirectToAction("Index", "Product", new { area = "Admin" });
+                }
+                else if (await userManager.IsInRoleAsync(user, "Staff"))
+                {
+                    return RedirectToAction("Index", "Product", new { area = "Admin" });
+                }
+
+                // user thường
                 return RedirectToAction("Index", "Product");
             }
 
-            ModelState.AddModelError("", "Email hoặc mật khẩu không đúng");
-
+            ModelState.AddModelError("", "Sai mật khẩu");
             return View(model);
         }
 
         // ================= LOGOUT =================
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> Logout()
         {
             await signInManager.SignOutAsync();
-
             return RedirectToAction("Index", "Product");
         }
+
         // ================= PROFILE =================
 
         [Authorize]
@@ -107,7 +136,6 @@ namespace Clothes_shop.Controllers
                 return RedirectToAction("Login");
 
             ViewBag.EditField = edit;
-
             return View(user);
         }
 
@@ -135,7 +163,6 @@ namespace Clothes_shop.Controllers
             return RedirectToAction("Profile");
         }
 
-
         // ================= UPDATE AVATAR =================
 
         [Authorize]
@@ -149,7 +176,7 @@ namespace Clothes_shop.Controllers
 
             if (avatar != null && avatar.Length > 0)
             {
-                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(avatar.FileName);
+                var fileName = Guid.NewGuid() + Path.GetExtension(avatar.FileName);
 
                 var folder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/avatars");
 
@@ -171,26 +198,26 @@ namespace Clothes_shop.Controllers
             return RedirectToAction("Profile");
         }
 
-        //Wishlist
-        [HttpPost]
-        public IActionResult Toggle(int productId)
-        {
-            if (!User.Identity.IsAuthenticated)
-            {
-                return RedirectToAction("Login", "Account");
-            }
+        // ================= WISHLIST =================
 
-            var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> Toggle(int productId)
+        {
+            var user = await userManager.GetUserAsync(User);
+
+            if (user == null)
+                return RedirectToAction("Login");
 
             var item = _context.WishLists
-                .FirstOrDefault(x => x.ProductId == productId && x.UserId == userId);
+                .FirstOrDefault(x => x.ProductId == productId && x.UserId == user.Id);
 
             if (item == null)
             {
                 _context.WishLists.Add(new WishList
                 {
                     ProductId = productId,
-                    UserId = userId
+                    UserId = user.Id
                 });
             }
             else
@@ -198,25 +225,24 @@ namespace Clothes_shop.Controllers
                 _context.WishLists.Remove(item);
             }
 
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             return Redirect(Request.Headers["Referer"].ToString());
         }
 
-        public IActionResult Wishlist()
+        [Authorize]
+        public async Task<IActionResult> Wishlist()
         {
-            if (!User.Identity.IsAuthenticated)
-            {
-                return RedirectToAction("Login", "Account");
-            }
+            var user = await userManager.GetUserAsync(User);
 
-            var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            if (user == null)
+                return RedirectToAction("Login");
 
-            var products = _context.WishLists
-                .Where(w => w.UserId == userId)
+            var products = await _context.WishLists
+                .Where(w => w.UserId == user.Id)
                 .Include(w => w.Product)
                 .Select(w => w.Product)
-                .ToList();
+                .ToListAsync();
 
             return View(products);
         }

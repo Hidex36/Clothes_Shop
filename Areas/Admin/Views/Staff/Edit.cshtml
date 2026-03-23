@@ -1,0 +1,114 @@
+﻿@model Clothes_shop.Models.Users
+
+@{
+    Layout = "_Layout";
+}
+
+<div class="container-fluid px-4 py-5">
+
+    <div class="mb-4 border-bottom pb-2">
+        <h2 class="fw-bold">Chỉnh sửa nhân viên</h2>
+    </div>
+
+    <form asp-action="Edit" method="post">
+
+        <!-- Hidden ID -->
+        <input type="hidden" asp-for="Id" />
+
+        <div class="row g-4">
+
+            <!-- LEFT: Thông tin cá nhân -->
+            <div class="col-md-6">
+                <div class="card shadow-sm rounded-4 p-4 h-100">
+                    <h5 class="mb-3 fw-bold">Thông tin cá nhân</h5>
+
+                    <div class="mb-3">
+                        <label>Họ tên</label>
+                        <input asp-for="FullName" class="form-control" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label>Địa chỉ</label>
+                        <input asp-for="Address" class="form-control" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label>Ngày sinh</label>
+                        <input asp-for="DateOfBirth" type="date" class="form-control" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label>Giới tính</label>
+                        <select asp-for="Sex" class="form-control">
+                            <option value="">-- Chọn --</option>
+                            <option value="1">Nam</option>
+                            <option value="2">Nữ</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RIGHT -->
+            <div class="col-md-6 d-flex flex-column gap-4">
+
+                <!-- Avatar -->
+                <div class="card shadow-sm rounded-4 p-4">
+                    <h5 class="fw-bold mb-3">Ảnh đại diện</h5>
+
+                    <img id="preview"
+                         src="@Model.AvatarImageUrl"
+                         class="rounded-circle border mb-3"
+                         style="width:120px;height:120px;object-fit:cover" />
+
+                    <input type="file" id="imageInput" class="form-control" />
+
+                    <input asp-for="AvatarImageUrl" type="hidden" />
+                </div>
+
+                <!-- Account -->
+                <div class="card shadow-sm rounded-4 p-4">
+                    <h5 class="fw-bold mb-3">Tài khoản</h5>
+
+                    <div class="mb-3">
+                        <label>Email</label>
+                        <input asp-for="Email" class="form-control" />
+                    </div>
+
+                    <!-- optional: đổi password -->
+                    <div class="mb-3">
+                        <label>Mật khẩu mới (nếu muốn đổi)</label>
+                        <input name="password" type="password" class="form-control" />
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- BUTTON -->
+        <div class="mt-4 d-flex justify-content-end gap-2">
+
+            <a asp-action="Index" class="btn btn-secondary px-4">
+                Hủy
+            </a>
+
+            <button class="btn btn-primary px-4">
+                <i class="bi bi-check-circle"></i> Xác nhận chỉnh sửa
+            </button>
+
+        </div>
+
+    </form>
+</div>
+
+<script>
+    const input = document.getElementById("imageInput");
+    const preview = document.getElementById("preview");
+
+    input.addEventListener("change", function () {
+        const file = this.files[0];
+        if (file) {
+            preview.src = URL.createObjectURL(file);
+        }
+    });
+</script>
