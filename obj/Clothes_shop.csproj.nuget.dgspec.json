@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "D:\\ASP .NET\\CK\\Clothes_Shop\\Clothes_shop.csproj": {}
+    "D:\\ASP.NET\\Clothes_shop\\Clothes_shop\\Clothes_shop.csproj": {}
   },
   "projects": {
-    "D:\\ASP .NET\\CK\\Clothes_Shop\\Clothes_shop.csproj": {
+    "D:\\ASP.NET\\Clothes_shop\\Clothes_shop\\Clothes_shop.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\ASP .NET\\CK\\Clothes_Shop\\Clothes_shop.csproj",
+        "projectUniqueName": "D:\\ASP.NET\\Clothes_shop\\Clothes_shop\\Clothes_shop.csproj",
         "projectName": "Clothes_shop",
-        "projectPath": "D:\\ASP .NET\\CK\\Clothes_Shop\\Clothes_shop.csproj",
-        "packagesPath": "C:\\Users\\ADMIN\\.nuget\\packages\\",
-        "outputPath": "D:\\ASP .NET\\CK\\Clothes_Shop\\obj\\",
+        "projectPath": "D:\\ASP.NET\\Clothes_shop\\Clothes_shop\\Clothes_shop.csproj",
+        "packagesPath": "C:\\Users\\USER\\.nuget\\packages\\",
+        "outputPath": "D:\\ASP.NET\\Clothes_shop\\Clothes_shop\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\ADMIN\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\USER\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -92,6 +92,28 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[8.0.16, 8.0.16]"
+            },
+            {
+              "name": "Microsoft.Net.Sdk.Compilers.Toolset",
+              "version": "[9.0.300, 9.0.300]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Host.win-x64",
+              "version": "[8.0.16, 8.0.16]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Ref",
+              "version": "[8.0.16, 8.0.16]"
+            },
+            {
+              "name": "Microsoft.WindowsDesktop.App.Ref",
+              "version": "[8.0.16, 8.0.16]"
+            }
+          ],
           "frameworkReferences": {
             "Microsoft.AspNetCore.App": {
               "privateAssets": "none"
@@ -100,7 +122,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.311/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.300/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

@@ -19,18 +19,7 @@
         <ul class="navbar-nav ms-auto flex-row align-items-center">
 
             <li class="nav-item dropdown me-2">
-                <a class="nav-link position-relative p-2" href="#" id="alertsDropdown" data-bs-toggle="dropdown">
-                    <i class="bi bi-bell fs-5 text-dark"></i>
-                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.65rem;">
-                        3
-                    </span>
-                </a>
-                <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 mt-2">
-                    <li><h6 class="dropdown-header">Thông báo mới</h6></li>
-                    <li><a class="dropdown-item py-2" href="#">Đơn hàng mới #123</a></li>
-                    <li><hr class="dropdown-divider"></li>
-                    <li><a class="dropdown-item text-center small text-muted" href="#">Xem tất cả</a></li>
-                </ul>
+                @await Component.InvokeAsync("OrderBadge")
             </li>
 
             <div class="vr mx-3 text-gray-300 d-none d-sm-block" style="height: 25px;"></div>

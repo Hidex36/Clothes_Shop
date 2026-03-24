@@ -32,7 +32,6 @@ namespace Clothes_shop.Controllers
             var cart = GetCartFromSession();
             return View(cart);
         }
-
         [HttpPost]
         public IActionResult AddToCart(int id, int quantity = 1)
         {
@@ -40,11 +39,29 @@ namespace Clothes_shop.Controllers
             if (product != null)
             {
                 var cart = GetCartFromSession();
+
+                // Tìm xem sản phẩm này đã có trong giỏ chưa
+                var cartItem = cart.Items.FirstOrDefault(i => i.Product.Id == id);
+                int currentInCart = cartItem?.Quantity ?? 0;
+
+                // KIỂM TRA TỒN KHO
+                if (product.quantity < (currentInCart + quantity))
+                {
+                    // Nếu không đủ hàng, có thể dùng TempData để báo lỗi ra View
+                    TempData["Error"] = $"Rất tiếc, sản phẩm {product.Name} chỉ còn {product.quantity} món.";
+                    return RedirectBack();
+                }
+
                 cart.AddItem(product, quantity);
                 SaveCartToSession(cart);
             }
 
-            // Quay lại trang trước đó hoặc về Index nếu không có Referer
+            return RedirectBack();
+        }
+
+        // Hàm bổ trợ để quay lại trang cũ
+        private IActionResult RedirectBack()
+        {
             var referer = Request.Headers["Referer"].ToString();
             return string.IsNullOrEmpty(referer) ? RedirectToAction("Index") : Redirect(referer);
         }
@@ -73,6 +90,28 @@ namespace Clothes_shop.Controllers
                 SaveCartToSession(cart);
             }
 
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        public IActionResult Plus(int id)
+        {
+            var product = _context.Products.Find(id);
+            var cart = GetCartFromSession();
+            var item = cart.Items.FirstOrDefault(x => x.Product.Id == id);
+
+            if (item != null && product != null)
+            {
+                if (item.Quantity + 1 <= product.quantity)
+                {
+                    item.Quantity += 1;
+                    SaveCartToSession(cart);
+                }
+                else
+                {
+                    TempData["Error"] = "Số lượng trong kho đã đạt giới hạn.";
+                }
+            }
             return RedirectToAction("Index");
         }
 

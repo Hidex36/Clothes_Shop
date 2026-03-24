@@ -1,0 +1,74 @@
+﻿@model IEnumerable<Clothes_shop.Models.Orders>
+
+<div class="dropdown">
+    <a class="nav-link position-relative d-flex align-items-center p-0" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+        <i class="bi bi-bell fs-4 text-dark"></i>
+        @if (ViewBag.Count > 0)
+        {
+            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.65rem; padding: 0.35em 0.65em;">
+                @ViewBag.Count
+            </span>
+        }
+    </a>
+
+    <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-3" style="width: 300px;">
+        <li><h6 class="dropdown-header py-3 fw-bold text-dark">Thông báo đơn hàng mới</h6></li>
+
+        @if (Model.Any())
+        {
+            @foreach (var order in Model)
+            {
+                <li>
+                    <a class="dropdown-item py-3 border-bottom-dashed" asp-area="Admin" asp-controller="Order" asp-action="Detail" asp-route-id="@order.Id">
+                        <div class="d-flex align-items-center">
+                            <div class="bg-primary-subtle p-2 rounded-circle me-3 text-primary">
+                                <i class="bi bi-cart-plus small"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="small fw-bold text-dark">Đơn hàng #@order.Id</div>
+                                <div class="text-muted d-flex justify-content-between" style="font-size: 0.75rem;">
+                                    <span>@order.Name</span>
+                                    <span>@order.OrderDate.ToString("HH:mm")</span>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </li>
+            }
+            <li>
+                <a class="dropdown-item text-center py-3 small text-primary fw-bold" asp-area="Admin" asp-controller="Order" asp-action="Index">
+                    Xem tất cả đơn hàng
+                </a>
+            </li>
+        }
+        else
+        {
+            <li>
+                <div class="dropdown-item text-center py-4 text-muted small">
+                    <i class="bi bi-check2-circle fs-2 d-block mb-2"></i>
+                    Không có đơn hàng mới
+                </div>
+            </li>
+        }
+    </ul>
+</div>
+
+<style>
+    .border-bottom-dashed {
+        border-bottom: 1px dashed #eee;
+    }
+
+    .bg-primary-subtle {
+        background-color: #e7f1ff;
+        width: 35px;
+        height: 35px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .dropdown-item:active {
+        background-color: #f8f9fa;
+        color: inherit;
+    }
+</style>

@@ -3,13 +3,22 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
 <div class="container mt-5">
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show shadow-sm mb-4" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            @TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="fw-bold"><i class="bi bi-cart3 text-primary me-2"></i>Giỏ hàng của bạn</h2>
 
         @if (Model.Items.Count > 0)
         {
             <a asp-action="Clear" class="btn btn-outline-danger btn-sm"
-               onclick="return confirm('Bạn có chắc chắn muốn dọn sạch giỏ hàng?')">
+            onclick="return confirm('Bạn có chắc chắn muốn dọn sạch giỏ hàng?')">
                 <i class="bi bi-trash3-fill me-1"></i> Xóa toàn bộ
             </a>
         }
@@ -37,16 +46,18 @@
                                     <td>
                                         <div class="d-flex align-items-center">
                                             <img src="@item.Product.ImageUrl" alt="@item.Product.Name"
-                                                 style="width: 60px; height: 60px; object-fit: cover;" class="rounded me-3 border">
+                                            style="width: 60px; height: 60px; object-fit: cover;" class="rounded me-3 border">
                                             <div>
                                                 <span class="fw-bold d-block text-truncate" style="max-width: 250px;">@item.Product.Name</span>
+                                                @* Thêm nhãn nhỏ hiển thị tồn kho cho khách biết *@
+                                                <small class="text-muted">Kho còn: @item.Product.quantity</small>
                                             </div>
                                         </div>
                                     </td>
                                     <td class="text-center">@item.Product.Price.ToString("N0")đ</td>
                                     <td class="text-center">
                                         <div class="d-flex justify-content-center align-items-center">
-                                            <form asp-controller="Cart" asp-action="Remove" method="post" class="d-inline">
+                                            <form asp-action="Remove" method="post" class="d-inline">
                                                 <input type="hidden" name="id" value="@item.Product.Id" />
                                                 <button type="submit" class="btn btn-sm btn-outline-secondary px-2">
                                                     <i class="bi bi-dash"></i>
@@ -56,13 +67,15 @@
                                             <input type="text" class="form-control form-control-sm text-center mx-2"
                                                    value="@item.Quantity" style="width: 45px;" readonly>
 
-                                            <form asp-controller="Cart" asp-action="AddToCart" method="post" class="d-inline">
+                                            <form asp-action="Plus" method="post" class="d-inline">
                                                 <input type="hidden" name="id" value="@item.Product.Id" />
-                                                <button type="submit" class="btn btn-sm btn-outline-secondary px-2">
+                                                <button type="submit" class="btn btn-sm btn-outline-secondary px-2"
+                                                @(item.Quantity >= item.Product.quantity ? "disabled" : "")>
                                                     <i class="bi bi-plus"></i>
                                                 </button>
                                             </form>
                                         </div>
+                                        <small class="text-muted d-block mt-1">Tối đa: @item.Product.quantity</small>
                                     </td>
                                     <td class="text-end text-success fw-bold">
                                         @((item.Product.Price * item.Quantity).ToString("N0"))đ
@@ -71,7 +84,7 @@
                                         <form asp-controller="Cart" asp-action="RemoveLine" method="post">
                                             <input type="hidden" name="id" value="@item.Product.Id" />
                                             <button type="submit" class="btn btn-link text-danger p-0"
-                                                    onclick="return confirm('Bạn muốn xóa sản phẩm này khỏi giỏ hàng?')">
+                                            onclick="return confirm('Bạn muốn xóa sản phẩm này khỏi giỏ hàng?')">
                                                 <i class="bi bi-trash3 fs-5"></i>
                                             </button>
                                         </form>
@@ -84,16 +97,13 @@
             </div>
 
             <div class="col-md-3">
+                @* Phần Tóm tắt giữ nguyên *@
                 <div class="card shadow-sm border-0">
                     <div class="card-body">
                         <h5 class="card-title mb-3 fw-bold">Tóm tắt đơn hàng</h5>
                         <div class="d-flex justify-content-between mb-2">
                             <span class="text-muted">Tạm tính:</span>
                             <span class="fw-bold">@Model.Items.Sum(x => x.Product.Price * x.Quantity).ToString("N0")đ</span>
-                        </div>
-                        <div class="d-flex justify-content-between mb-3">
-                            <span class="text-muted">Giảm giá:</span>
-                            <span class="text-success">0đ</span>
                         </div>
                         <hr>
                         <div class="d-flex justify-content-between mb-4">
@@ -126,6 +136,7 @@
             <a asp-controller="Product" asp-action="Index" class="btn btn-primary px-5 py-2">
                 <i class="bi bi-shop me-2"></i> Mua sắm ngay
             </a>
+
         </div>
     }
 </div>

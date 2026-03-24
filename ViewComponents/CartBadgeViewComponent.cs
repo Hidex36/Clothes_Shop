@@ -14,9 +14,7 @@ namespace Clothes_shop.ViewComponents
 
             if (!string.IsNullOrEmpty(jsonCart))
             {
-                // Giải mã chuỗi thành đối tượng Cart
                 var cart = JsonConvert.DeserializeObject<Cart>(jsonCart);
-                // Tính tổng số lượng (Sử dụng hàm Sum hoặc hàm ComputeTotalQuantity bạn đã viết)
                 totalItems = cart.Items.Sum(i => i.Quantity);
             }
 
